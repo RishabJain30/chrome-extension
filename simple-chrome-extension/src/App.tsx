@@ -1,14 +1,17 @@
+import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
+  const [colour, setColour] = useState('')
   const onClick = async () => {
     let [tab] = await chrome.tabs.query({ active: true });
-    chrome.scripting.executeScript({
+    chrome.scripting.executeScript<string[], void>({
       target: { tabId: tab.id! },
-      func: () => {
-        document.body.style.backgroundColor = 'lightblue';
+      args: [colour],
+      func: (colour) => {
+        document.body.style.backgroundColor = colour;
       },
     });
   }
@@ -25,6 +28,7 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
+        <input type='color' value={colour} onChange={(e) => setColour(e.target.value)} style={{marginRight: '1rem'}} />
         <button onClick={onClick}>
           Click me
         </button>
